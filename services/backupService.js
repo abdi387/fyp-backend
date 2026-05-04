@@ -148,9 +148,13 @@ class BackupService {
   getDbConfig() {
     return {
       host: process.env.DB_HOST || 'localhost',
+      port: Number(process.env.DB_PORT || 3306),
       user: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || '',
-      database: process.env.DB_NAME || 'fyp_management'
+      database: process.env.DB_NAME || 'fyp_management',
+      ssl: process.env.DB_SSL === 'true'
+        ? { rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true' }
+        : undefined
     };
   }
 
@@ -165,9 +169,11 @@ class BackupService {
       console.log('[BackupService] Connecting to database for dump...');
       connection = await mysql.createConnection({
         host: dbConfig.host,
+        port: dbConfig.port,
         user: dbConfig.user,
         password: dbConfig.password,
         database: dbConfig.database,
+        ssl: dbConfig.ssl,
         multipleStatements: true
       });
 
@@ -432,9 +438,11 @@ class BackupService {
         console.log('[BackupService] Connecting to database for restore...');
         connection = await mysql.createConnection({
           host: dbConfig.host,
+          port: dbConfig.port,
           user: dbConfig.user,
           password: dbConfig.password,
           database: dbConfig.database,
+          ssl: dbConfig.ssl,
           multipleStatements: true
         });
 
