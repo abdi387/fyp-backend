@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment variables (Crucial for security)
+.env
+.env.local
+
+# Database Backups
+# We ignore the actual files but can keep the folder structure
+backups/*.sql
+backups/*.zip
+backups/temp/
+
+# User Uploads
+uploads/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Editor/OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build/Dist
+dist/
