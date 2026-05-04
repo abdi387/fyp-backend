@@ -37,15 +37,23 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+const normalizeOrigin = (origin) => origin?.replace(/\/$/, '');
+
 const allowedOrigins = [
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'https://fyp-frontend-9ey8.onrender.com',
   ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(url => url.trim()) : [])
-].filter(Boolean);
+].filter(Boolean).map(normalizeOrigin);
 
 // Enable CORS
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(normalizeOrigin(origin))) {
+      return callback(null, true);
+    }
+    return callback(null, false);
+  },
   credentials: true,
   optionsSuccessStatus: 200
 }));
