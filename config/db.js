@@ -1,6 +1,8 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+const dbSslEnabled = process.env.DB_SSL === 'true' || process.env.NODE_ENV === 'production';
+const rejectUnauthorized = process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true';
 
 // Debug: Print what's being loaded (remove after fixing)
 console.log('🔍 Environment variables:');
@@ -28,7 +30,15 @@ const sequelize = new Sequelize(
       acquire: 30000,
       idle: 10000,
       evict: 10000
-    }
+    },
+    dialectOptions: dbSslEnabled
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized
+          }
+        }
+      : {}
   }
 );
 

@@ -37,9 +37,15 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',').map(url => url.trim()) : [])
+].filter(Boolean);
+
 // Enable CORS
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin: allowedOrigins,
   credentials: true,
   optionsSuccessStatus: 200
 }));
@@ -102,7 +108,7 @@ app.use('*', (req, res) => {
 
 const PORT = process.env.PORT || 5001;
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`
   🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}
   📝 Test endpoint: http://localhost:${PORT}/api/test
