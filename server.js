@@ -97,11 +97,26 @@ app.get('/api/health', async (req, res) => {
   try {
     const { sequelize } = require('./config/db');
     await sequelize.authenticate();
+    const [databaseRows] = await sequelize.query('SELECT DATABASE() AS database_name');
+    const [tableRows] = await sequelize.query(`
+      SELECT TABLE_NAME
+      FROM INFORMATION_SCHEMA.TABLES
+      WHERE TABLE_SCHEMA = DATABASE()
+      ORDER BY TABLE_NAME
+    `);
+
+    const tables = tableRows.map((row) => row.TABLE_NAME || Object.values(row)[0]);
+    const requiredTables = ['users', 'sections', 'registration_control', 'system_settings'];
+    const missingTables = requiredTables.filter((table) => !tables.includes(table));
 
     res.json({
       success: true,
       status: 'ok',
       database: 'connected',
+      databaseName: databaseRows[0]?.database_name,
+      tableCount: tables.length,
+      requiredTables,
+      missingTables,
       timestamp: new Date().toISOString()
     });
   } catch (error) {
