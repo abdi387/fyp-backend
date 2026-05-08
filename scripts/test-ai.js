@@ -13,7 +13,6 @@ async function testAI() {
   console.log('1️⃣ Health Check:');
   const health = getAIHealth();
   console.log('✅ OpenRouter:', health.openrouter);
-  console.log('✅ Gemini:', health.gemini);
   console.log('📊 Cache:', health.cacheSize, 'items\n');
   
   // Test 2: Generate suggestions
@@ -42,4 +41,3 @@ async function testAI() {
 }
 
 testAI().catch(console.error);
-

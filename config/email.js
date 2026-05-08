@@ -12,8 +12,7 @@ const transporter = nodemailer.createTransport({
   },
   tls: {
     rejectUnauthorized: false, // Allow self-signed certificates
-    // Add DNS timeout handling
-    ciphers: 'SSLv3'
+    // Removed outdated SSLv3 cipher which is typically blocked in production
   },
   // Connection timeout handling
   connectionTimeout: 10000, // 10 seconds
@@ -91,7 +90,7 @@ const sendEmail = async (options, retryCount = 0) => {
  * @param {string} userName - User's name
  */
 const sendPasswordResetEmail = async (to, resetToken, userName) => {
-  const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/reset-password/${resetToken}`;
+  const resetUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/reset-password/${resetToken}`;
   
   const html = `
     <!DOCTYPE html>
@@ -146,7 +145,7 @@ const sendPasswordResetEmail = async (to, resetToken, userName) => {
  * @param {string} role - User's role
  */
 const sendAccountCreationEmail = async (to, userName, password, role) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
 
   const roleName = role.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
 
@@ -235,7 +234,7 @@ const sendAccountCreationEmail = async (to, userName, password, role) => {
  * @param {string} department - Department name
  */
 const sendProposalSubmissionEmail = async (to, deptHeadName, groupName, studentName, proposalTitle, department) => {
-  const proposalUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dept-head/proposals`;
+  const proposalUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/dept-head/proposals`;
 
   const html = `
     <!DOCTYPE html>
@@ -320,7 +319,7 @@ const sendProposalSubmissionEmail = async (to, deptHeadName, groupName, studentN
  * @param {string} department - Department name
  */
 const sendProgressSubmissionEmail = async (to, advisorName, groupName, reportTitle, department) => {
-  const progressUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/advisor/progress-review`;
+  const progressUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/advisor/progress-review`;
 
   const html = `
     <!DOCTYPE html>
@@ -406,7 +405,7 @@ const sendProgressSubmissionEmail = async (to, advisorName, groupName, reportTit
  * @param {string} feedback - Feedback message
  */
 const sendProgressFeedbackEmail = async (to, studentName, groupName, reportTitle, advisorName, feedback) => {
-  const progressUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/student/progress`;
+  const progressUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/student/progress`;
 
   const html = `
     <!DOCTYPE html>
@@ -494,7 +493,7 @@ const sendProgressFeedbackEmail = async (to, studentName, groupName, reportTitle
  * @param {string} advisorName - Advisor's name
  */
 const sendFinalDraftApprovalEmailToDeptHead = async (to, deptHeadName, groupName, draftTitle, department, advisorName) => {
-  const draftUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dept-head/final-drafts`;
+  const draftUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/dept-head/final-drafts`;
 
   const html = `
     <!DOCTYPE html>
@@ -583,7 +582,7 @@ const sendFinalDraftApprovalEmailToDeptHead = async (to, deptHeadName, groupName
  * @param {string} advisorName - Advisor's name
  */
 const sendFinalDraftApprovalEmailToStudents = async (to, studentName, groupName, draftTitle, advisorName) => {
-  const progressUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/student/final-draft`;
+  const progressUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/student/final-draft`;
 
   const html = `
     <!DOCTYPE html>
@@ -668,7 +667,7 @@ const sendFinalDraftApprovalEmailToStudents = async (to, studentName, groupName,
  * @param {Array} members - Array of member names
  */
 const sendGroupFormationEmail = async (to, studentName, groupName, department, section, members) => {
-  const groupUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/student/group`;
+  const groupUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/student/group`;
 
   const membersList = members.map(m => `<li>${m}</li>`).join('');
 
@@ -764,7 +763,7 @@ const sendGroupFormationEmail = async (to, studentName, groupName, department, s
  * @param {string} evaluatorNames - Names of assigned evaluators
  */
 const sendEvaluatorAssignmentToStudentsEmail = async (to, studentName, groupName, evaluatorNames) => {
-  const evaluatorsUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/student/evaluators`;
+  const evaluatorsUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/student/evaluators`;
 
   const html = `
     <!DOCTYPE html>
@@ -851,7 +850,7 @@ const sendEvaluatorAssignmentToStudentsEmail = async (to, studentName, groupName
  * @param {string} evaluatorNames - Names of assigned evaluators
  */
 const sendEvaluatorAssignmentToDeptHeadEmail = async (to, deptHeadName, groupName, department, evaluatorNames) => {
-  const deptDashboardUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dept-head/dashboard`;
+  const deptDashboardUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/dept-head/dashboard`;
 
   const html = `
     <!DOCTYPE html>
@@ -932,7 +931,7 @@ const sendEvaluatorAssignmentToDeptHeadEmail = async (to, deptHeadName, groupNam
  * @param {string} department - Department name
  */
 const sendEvaluatorAssignmentEmail = async (to, advisorName, groupName, projectTitle, department) => {
-  const evaluationUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/advisor/AdvisorEvaluations`;
+  const evaluationUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/advisor/AdvisorEvaluations`;
 
   const html = `
     <!DOCTYPE html>
@@ -1025,7 +1024,7 @@ const sendEvaluatorAssignmentEmail = async (to, advisorName, groupName, projectT
  * @param {string} venue - Defense venue
  */
 const sendDefenseScheduleEmailToStudents = async (to, studentName, groupName, projectTitle, date, time, venue) => {
-  const defenseUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/student/defense-schedule`;
+  const defenseUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/student/defense-schedule`;
 
   const html = `
     <!DOCTYPE html>
@@ -1127,7 +1126,7 @@ const sendDefenseScheduleEmailToStudents = async (to, studentName, groupName, pr
  * @param {string} venue - Defense venue
  */
 const sendDefenseScheduleEmailToDeptHead = async (to, deptHeadName, groupName, department, date, time, venue) => {
-  const defenseUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dept-head/defense-schedule`;
+  const defenseUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/dept-head/defense-schedule`;
 
   const html = `
     <!DOCTYPE html>
@@ -1217,7 +1216,7 @@ const sendDefenseScheduleEmailToDeptHead = async (to, deptHeadName, groupName, d
  * @param {string} venue - Defense venue
  */
 const sendDefenseDutyEmail = async (to, evaluatorName, groupName, date, time, venue) => {
-  const defenseUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/advisor/schedule`;
+  const defenseUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/advisor/schedule`;
 
   const html = `
     <!DOCTYPE html>
@@ -1309,7 +1308,7 @@ const sendDefenseDutyEmail = async (to, evaluatorName, groupName, date, time, ve
  * @param {string} inquiryId - Inquiry ID
  */
 const sendInquirySubmissionEmail = async (to, adminName, inquirerName, inquirerEmail, message, inquiryId) => {
-  const inquiryUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/admin/inquiries`;
+  const inquiryUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/admin/inquiries`;
 
   const html = `
     <!DOCTYPE html>
@@ -1477,7 +1476,7 @@ const sendInquiryResponseEmail = async (to, inquirerName, responseMessage, origi
  * @param {string} studentId - Student ID
  */
 const sendRegistrationApprovalEmail = async (to, studentName, department, studentId) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
 
   const html = `
     <!DOCTYPE html>
@@ -1658,7 +1657,7 @@ const sendRegistrationRejectionEmail = async (to, studentName, department, reaso
  * @param {string} department - Department name
  */
 const sendStudentRegistrationEmail = async (to, deptHeadName, studentName, studentEmail, studentId, department) => {
-  const adminUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dept-head/users`;
+  const adminUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/dept-head/users`;
 
   const html = `
     <!DOCTYPE html>
@@ -1746,7 +1745,7 @@ const sendStudentRegistrationEmail = async (to, deptHeadName, studentName, stude
  * @param {string} userRole - User's role
  */
 const sendNewAcademicYearEmail = async (to, userName, yearName, userRole) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
 
   const html = `
     <!DOCTYPE html>
@@ -1872,7 +1871,7 @@ const sendNewAcademicYearEmail = async (to, userName, yearName, userRole) => {
  * @param {string} userRole - User's role
  */
 const sendSemesterChangeEmail = async (to, userName, semester, userRole) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
   const phaseName = semester === '1' ? 'Documentation Phase' : 'Implementation Phase';
 
   const html = `
@@ -2032,7 +2031,7 @@ const sendSemesterChangeEmail = async (to, userName, semester, userRole) => {
  * @param {string} department - Department name
  */
 const sendSemesterChangeToDeptHeadEmail = async (to, deptHeadName, semester, department) => {
-  const dashboardUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/dept-head/dashboard`;
+  const dashboardUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/dept-head/dashboard`;
   const phaseName = semester === '1' ? 'Documentation Phase' : 'Implementation Phase';
 
   const html = `
@@ -2163,7 +2162,7 @@ const sendSemesterChangeToDeptHeadEmail = async (to, deptHeadName, semester, dep
  * @param {string} semester - New semester number
  */
 const sendSemesterChangeToAdvisorEmail = async (to, advisorName, semester) => {
-  const dashboardUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/advisor/dashboard`;
+  const dashboardUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/advisor/dashboard`;
   const phaseName = semester === '1' ? 'Documentation Phase' : 'Implementation Phase';
 
   const html = `
@@ -2293,7 +2292,7 @@ const sendSemesterChangeToAdvisorEmail = async (to, advisorName, semester) => {
  * @param {string} department - Department name
  */
 const sendFinalDraftSubmissionEmail = async (to, advisorName, groupName, draftTitle, department) => {
-  const reviewUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/advisor/final-approval`;
+  const reviewUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/advisor/final-approval`;
 
   const html = `
     <!DOCTYPE html>
@@ -2375,7 +2374,7 @@ const sendFinalDraftSubmissionEmail = async (to, advisorName, groupName, draftTi
  * @param {string} userName - User's name
  */
 const sendAccountApprovalEmail = async (to, userName) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
   
   const html = `
     <!DOCTYPE html>
@@ -2474,7 +2473,7 @@ const sendAccountRejectionEmail = async (to, userName, reason = null) => {
  * @param {string} domain - Project domain
  */
 const sendProposalApprovalEmail = async (to, studentName, groupName, projectTitle, domain) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
 
   const html = `
     <!DOCTYPE html>
@@ -2551,7 +2550,7 @@ const sendProposalApprovalEmail = async (to, studentName, groupName, projectTitl
  * @param {string} feedback - Rejection feedback
  */
 const sendProposalRejectionEmail = async (to, studentName, groupName, feedback) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
 
   const html = `
     <!DOCTYPE html>
@@ -2632,7 +2631,7 @@ const sendProposalRejectionEmail = async (to, studentName, groupName, feedback) 
  * @param {string} advisorEmail - Advisor's email
  */
 const sendAdvisorProjectClaimEmail = async (to, studentName, groupName, advisorName, advisorEmail) => {
-  const loginUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/auth/login`;
+  const loginUrl = `${process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com'}/auth/login`;
 
   const html = `
     <!DOCTYPE html>

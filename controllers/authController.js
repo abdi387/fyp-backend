@@ -363,11 +363,10 @@ const forgotPassword = async (req, res) => {
     // Find user by email
     const user = await User.findOne({ where: { email } });
 
-    // Always return success message to prevent email enumeration
     if (!user) {
-      return res.json({
-        success: true,
-        message: 'If an account exists with that email, a password reset link has been sent.'
+      return res.status(404).json({
+        success: false,
+        error: 'No account was found with that email address.'
       });
     }
 
@@ -392,21 +391,21 @@ const forgotPassword = async (req, res) => {
       await resetTokenRecord.save();
     }
 
-    // Send email asynchronously (non-blocking) - fire and forget
-    sendPasswordResetEmail(user.email, resetToken, user.name).then(emailResult => {
-      if (!emailResult.success) {
-        console.error('Failed to send reset email:', emailResult.error);
-      } else {
-        console.log('✅ Password reset email sent to:', user.email);
-      }
-    }).catch(emailError => {
-      console.error('Password reset email error:', emailError.message);
-    });
+    const emailResult = await sendPasswordResetEmail(user.email, resetToken, user.name);
 
-    // Respond immediately to user
+    if (!emailResult.success) {
+      console.error('Failed to send reset email:', emailResult.error);
+      return res.status(502).json({
+        success: false,
+        error: 'Failed to send reset email. Please try again later.'
+      });
+    }
+
+    console.log('Password reset email sent to:', user.email);
+
     res.json({
       success: true,
-      message: 'If an account exists with that email, a password reset link has been sent.'
+      message: 'Password reset link sent. Check your email.'
     });
   } catch (error) {
     console.error('Forgot password error:', error);

@@ -6,14 +6,11 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Debug: Log API key status
 const useOpenRouter = !!process.env.OPENROUTER_API_KEY;
-const useGemini = !!process.env.GEMINI_API_KEY;
 
 if (useOpenRouter) {
   console.log('✅ OpenRouter API configured');
-} else if (useGemini) {
-  console.log('✅ GEMINI_API_KEY loaded successfully');
 } else {
-  console.error('⚠️  No AI API key configured (GEMINI_API_KEY or OPENROUTER_API_KEY)');
+  console.error('⚠️  No AI API key configured (OPENROUTER_API_KEY)');
 }
 
 /**
@@ -71,19 +68,6 @@ Rules: feasible for undergrads, real-world problems, modern tech, Ethiopian cont
     if (useOpenRouter) {
       suggestions = await callOpenRouter(systemPrompt, userPrompt);
     }
-    // Try Gemini second (if configured)
-    else if (useGemini) {
-      const { GoogleGenerativeAI } = require('@google/generative-ai');
-      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-      
-      const result = await model.generateContent(userPrompt);
-      const response = await result.response;
-      let text = response.text();
-      
-      text = text.replace(/```json/g, '').replace(/```/g, '').trim();
-      suggestions = JSON.parse(text);
-    }
     // Fallback to built-in suggestions
     else {
       console.warn('No AI API configured, returning fallback suggestions');
@@ -94,7 +78,7 @@ Rules: feasible for undergrads, real-world problems, modern tech, Ethiopian cont
       success: true,
       data: {
         suggestions: suggestions.slice(0, 5),
-        model: useOpenRouter ? 'openrouter' : useGemini ? 'gemini-2.0-flash' : 'fallback',
+        model: useOpenRouter ? 'openrouter' : 'fallback',
         generatedAt: new Date().toISOString()
       }
     };
@@ -360,7 +344,7 @@ const callOpenRouter = async (systemPrompt, userPrompt) => {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      'HTTP-Referer': 'http://localhost:5173',
+      'HTTP-Referer': process.env.FRONTEND_URL || 'https://fyp-frontend-9ey8.onrender.com',
       'X-Title': 'FYP Management System',
       'Content-Type': 'application/json'
     },
@@ -693,7 +677,6 @@ const extractTitlesFromText = (text) => {
 // Healthcheck endpoint
 const getAIHealth = () => ({
   openrouter: !!process.env.OPENROUTER_API_KEY,
-  gemini: !!process.env.GEMINI_API_KEY,
   cacheSize: cache.size,
   timestamp: new Date().toISOString()
 });
